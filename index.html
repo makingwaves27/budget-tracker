@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sky Movies Budget</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #0d0d1a;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 60px;
+    color: white;
+  }
+
+  .popcorn { font-size: 2.5rem; margin-bottom: 8px; text-align:center; }
+
+  h1 {
+    font-size: 1.7rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: #7070a0;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  .card {
+    background: #16213e;
+    border-radius: 24px;
+    padding: 28px 24px 24px;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 2px solid #1e2d50;
+  }
+
+  .card-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #7070a0;
+    margin-bottom: 8px;
+  }
+
+  .amount {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+    transition: color 0.4s;
+  }
+  .amount.ok   { color: #4ecca3; }
+  .amount.low  { color: #f5a623; }
+  .amount.gone { color: #e94560; }
+
+  .movies-left {
+    font-size: 1rem;
+    color: #7070a0;
+    margin-bottom: 18px;
+  }
+  .movies-left span { color: #fff; font-weight: 800; }
+
+  .bar-wrap {
+    background: #0a0a1a;
+    border-radius: 99px;
+    height: 12px;
+    overflow: hidden;
+  }
+  .bar {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s ease, background 0.4s;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 340px;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .price-symbol {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #7070a0;
+    flex-shrink: 0;
+  }
+
+  .price-input {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: #16213e;
+    color: #fff;
+    border: 2px solid #1e2d50;
+    border-radius: 16px;
+    padding: 14px 12px;
+    width: 90px;
+    flex-shrink: 0;
+    text-align: center;
+    -moz-appearance: textfield;
+  }
+  .price-input::-webkit-outer-spin-button,
+  .price-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .price-input:focus { outline: none; border-color: #e94560; }
+
+  .btn-buy {
+    flex: 1;
+    background: #e94560;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    border: none;
+    border-radius: 16px;
+    padding: 16px 10px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(233,69,96,0.4);
+    transition: transform 0.1s, opacity 0.2s;
+  }
+  .btn-buy:active { transform: scale(0.97); }
+  .btn-buy:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+
+  .btn-undo {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    background: transparent;
+    color: #7070a0;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: 2px solid #1e2d50;
+    border-radius: 16px;
+    padding: 13px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-undo:hover { border-color: #e94560; color: #e94560; }
+  .btn-undo:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .btn-reset {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    background: transparent;
+    color: #404060;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 2px solid #1a1a2e;
+    border-radius: 16px;
+    padding: 11px;
+    cursor: pointer;
+    margin-bottom: 32px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-reset:hover { border-color: #555; color: #aaa; }
+
+  .history-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #404060;
+    width: 100%;
+    max-width: 340px;
+    margin-bottom: 10px;
+  }
+
+  .history {
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .history-row {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #1e2d50;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(-6px); } to { opacity:1; transform: none; } }
+
+  .row-left { display: flex; flex-direction: column; }
+  .row-num  { font-size: 0.72rem; color: #404060; }
+  .row-name { font-size: 0.95rem; font-weight: 700; color: #ccc; }
+  .row-price { font-size: 1.05rem; font-weight: 900; color: #e94560; }
+
+  .empty-history {
+    color: #404060;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 12px 0;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .flash {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #4ecca3;
+    color: #0d0d1a;
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 12px 24px;
+    border-radius: 99px;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .flash.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="popcorn">🎬</div>
+<h1>Sky Movies Budget</h1>
+<p class="subtitle">£35 per month budget</p>
+
+<div class="card">
+  <div class="card-label" id="card-label">Left to spend this month</div>
+  <div class="amount ok" id="amount">£35.00</div>
+  <div class="movies-left" id="movies-left"></div>
+  <div class="bar-wrap">
+    <div class="bar" id="bar" style="width:100%; background:#4ecca3;"></div>
+  </div>
+</div>
+
+<div class="price-row">
+  <span class="price-symbol">£</span>
+  <input type="number" id="price-input" class="price-input" value="5" min="0.01" step="0.01" placeholder="5.00">
+  <button class="btn-buy" id="btn-buy" onclick="buyMovie()">🎥 Buy Movie</button>
+</div>
+<button class="btn-undo" id="btn-undo" onclick="undoLast()" disabled>↩ Undo last movie</button>
+<button class="btn-reset" onclick="resetMonth()">🔄 New month — set new budget</button>
+
+<div class="history-label">Movies bought this month</div>
+<div class="history" id="history"></div>
+<p class="empty-history" id="empty-msg">No movies bought yet this month.</p>
+
+<!-- Reset panel -->
+<div id="reset-panel" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:100; flex-direction:column; align-items:center; justify-content:center; padding:24px;">
+  <div style="background:#16213e; border:2px solid #1e2d50; border-radius:24px; padding:28px 24px; width:100%; max-width:320px; text-align:center;">
+    <div style="font-size:1.8rem; margin-bottom:8px;">🔄</div>
+    <div style="font-size:1.1rem; font-weight:900; margin-bottom:6px;">New Month</div>
+    <div style="font-size:0.85rem; color:#7070a0; margin-bottom:20px;">What's the budget for this month?</div>
+    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:20px;">
+      <span style="font-size:1.4rem; font-weight:900; color:#7070a0;">£</span>
+      <input type="number" id="new-budget-input" min="0.01" step="0.01"
+        style="font-family:Nunito,sans-serif; font-size:1.5rem; font-weight:800; background:#0d0d1a; color:#fff; border:2px solid #e94560; border-radius:14px; padding:12px 14px; width:130px; text-align:center; -moz-appearance:textfield;"
+        onkeydown="if(event.key==='Enter') confirmReset()">
+    </div>
+    <button onclick="confirmReset()" style="display:block; width:100%; background:#e94560; color:#fff; font-family:Nunito,sans-serif; font-size:1rem; font-weight:900; border:none; border-radius:14px; padding:14px; cursor:pointer; margin-bottom:10px;">Confirm &amp; Reset</button>
+    <button onclick="cancelReset()" style="display:block; width:100%; background:transparent; color:#7070a0; font-family:Nunito,sans-serif; font-size:0.9rem; font-weight:700; border:2px solid #1e2d50; border-radius:14px; padding:12px; cursor:pointer;">Cancel</button>
+  </div>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<script>
+  function load() {
+    try {
+      const hash = location.hash.slice(1);
+      if (hash) return JSON.parse(decodeURIComponent(hash));
+    } catch(e) {}
+    return { spent: 0, purchases: [], budget: 35 };
+  }
+
+  function save(state) {
+    try { location.hash = encodeURIComponent(JSON.stringify(state)); } catch(e) {}
+  }
+
+  function render() {
+    const state = load();
+    const budget = state.budget || 35;
+    const remaining = budget - state.spent;
+    const overspent = remaining < 0;
+    const pct = Math.max(0, (remaining / budget) * 100);
+
+    const cardLabel = document.getElementById('card-label');
+    cardLabel.textContent = overspent ? 'Overspent this month' : 'Left to spend this month';
+
+    const amountEl = document.getElementById('amount');
+    if (overspent) {
+      amountEl.textContent = '£' + Math.abs(remaining).toFixed(2) + ' over';
+      amountEl.className = 'amount gone';
+    } else {
+      amountEl.textContent = '£' + remaining.toFixed(2);
+      amountEl.className = 'amount ' + (remaining > budget / 2 ? 'ok' : 'low');
+    }
+
+    document.getElementById('movies-left').textContent = overspent
+      ? '£' + Math.abs(remaining).toFixed(2) + ' over the £' + budget.toFixed(2) + ' budget'
+      : '£' + remaining.toFixed(2) + ' left of £' + budget.toFixed(2);
+
+    const bar = document.getElementById('bar');
+    bar.style.width = pct + '%';
+    bar.style.background = overspent ? '#e94560' : remaining > budget / 2 ? '#4ecca3' : '#f5a623';
+
+    document.getElementById('btn-buy').disabled  = false;
+    document.getElementById('btn-undo').disabled = state.purchases.length === 0;
+
+    const historyEl = document.getElementById('history');
+    const emptyMsg  = document.getElementById('empty-msg');
+    historyEl.innerHTML = '';
+
+    if (state.purchases.length === 0) {
+      emptyMsg.style.display = 'block';
+    } else {
+      emptyMsg.style.display = 'none';
+      [...state.purchases].reverse().forEach((p, i) => {
+        const num = state.purchases.length - i;
+        const row = document.createElement('div');
+        row.className = 'history-row';
+        row.innerHTML =
+          '<div class="row-left">' +
+            '<span class="row-num">Movie #' + num + '</span>' +
+            '<span class="row-name">' + p.date + '</span>' +
+          '</div>' +
+        '<span class="row-price">-£' + p.price.toFixed(2) + '</span>';
+        historyEl.appendChild(row);
+      });
+    }
+  }
+
+  function buyMovie() {
+    const state = load();
+    const priceInput = parseFloat(document.getElementById('price-input').value);
+    if (!priceInput || priceInput <= 0) { showFlash('Enter a price first!'); return; }
+    const price = Math.round(priceInput * 100) / 100;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day:'numeric', month:'short' })
+                  + ' at ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    state.spent = Math.round((state.spent + price) * 100) / 100;
+    state.purchases.push({ date: dateStr, price: price });
+    save(state);
+    render();
+    const budget = state.budget || 35;
+    const remaining = budget - state.spent;
+    if (remaining < 0) {
+      showFlash('⚠️ £' + Math.abs(remaining).toFixed(2) + ' over budget!');
+    } else {
+      showFlash('Movie added! 🍿');
+    }
+  }
+
+  function undoLast() {
+    const state = load();
+    if (state.purchases.length === 0) return;
+    const last = state.purchases.pop();
+    state.spent = Math.max(0, Math.round((state.spent - last.price) * 100) / 100);
+    save(state);
+    render();
+    showFlash('Last movie removed ↩');
+  }
+
+  function resetMonth() {
+    document.getElementById('reset-panel').style.display = 'flex';
+    const state = load();
+    document.getElementById('new-budget-input').value = (state.budget || 35).toFixed(2);
+    document.getElementById('new-budget-input').focus();
+  }
+
+  function confirmReset() {
+    const input = parseFloat(document.getElementById('new-budget-input').value);
+    if (!input || input <= 0) { showFlash('Please enter a valid amount'); return; }
+    const newBudget = Math.round(input * 100) / 100;
+    save({ spent: 0, purchases: [], budget: newBudget });
+    document.getElementById('reset-panel').style.display = 'none';
+    render();
+    showFlash('New month — budget set to £' + newBudget.toFixed(2) + ' ✅');
+  }
+
+  function cancelReset() {
+    document.getElementById('reset-panel').style.display = 'none';
+  }
+
+  function showFlash(msg) {
+    const el = document.getElementById('flash');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  render();
+</script>
+</body>
+</html>
