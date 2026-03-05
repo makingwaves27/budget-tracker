@@ -285,14 +285,14 @@
 <script>
   function load() {
     try {
-      const hash = location.hash.slice(1);
-      if (hash) return JSON.parse(decodeURIComponent(hash));
+      const saved = localStorage.getItem('sky_movies_v1');
+      if (saved) return JSON.parse(saved);
     } catch(e) {}
     return { spent: 0, purchases: [], budget: 35 };
   }
 
   function save(state) {
-    try { location.hash = encodeURIComponent(JSON.stringify(state)); } catch(e) {}
+    try { localStorage.setItem('sky_movies_v1', JSON.stringify(state)); } catch(e) {}
   }
 
   function render() {
