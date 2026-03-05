@@ -4,6 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sky Movies Budget</title>
+<link rel="apple-touch-icon" href="icon.png">
+<script>
+  // Generate icon before page loads
+  window.addEventListener('DOMContentLoaded', function() {
+    var c = document.createElement('canvas');
+    c.width = 180; c.height = 180;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#0D0D1A';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, 180, 180, 36);
+    ctx.fill();
+    ctx.font = '110px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🍿', 90, 95);
+    var link = document.querySelector('link[rel="apple-touch-icon"]');
+    link.href = c.toDataURL('image/png');
+  });
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
 
